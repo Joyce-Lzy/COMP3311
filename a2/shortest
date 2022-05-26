@@ -1,0 +1,145 @@
+#!/usr/bin/python3
+
+import sqlite3,sys
+from collections import defaultdict
+
+graph = defaultdict(list)
+
+def build_edges(actors_list, title, year):
+  global graph
+  for i in range(0, len(actors_list)):
+    for actor in actors_list:
+      if actor != actors_list[i]:
+        temp = (actor, title, year)
+        graph[actors_list[i]].append(temp)
+
+
+def build_graph(cur):
+  global graph
+  cur.execute(
+    'select mo.id, mo.title, mo.year, group_concat(atr.name)\
+    from movie mo\
+    join acting ac on ac.movie_id = mo.id \
+    join actor atr on atr.id = ac.actor_id \
+    group by mo.id\
+    order by mo.title'
+  )
+  all_movies = cur.fetchall()
+  for t in all_movies:
+    mo_id = t[0]
+    title = t[1]
+    year = t[2]
+    actors_list = t[3].split(',')
+
+    # build edges for graph
+    build_edges(actors_list, title, year)
+
+# Function to find the shortest paths between two nodes of a graph
+def BFS_SP(start, goal):
+  global graph
+  paths = {}
+  for key in graph:
+    paths[key] = []
+
+  visited = list()
+
+  # Queue for traversing the graph in the BFS
+  queue = list()
+  queue.append(start)
+  paths[start].append((0,None))
+  paths[start].append((0,None))
+  
+  # If the desired v is reached
+  if start == goal:
+      return None
+    
+  # Loop to traverse the graph with the help of the queue
+  degree = 0
+  
+  while queue:
+    v = queue.pop(0)
+    if v == goal:
+      return paths
+    # Codition to check if the current v is not visited
+    if v not in visited:
+      neighbours = graph[v]
+      degree = paths[v][0][0] + 1
+      if degree <= 6:
+        # Loop to iterate over the neighbours of the v
+        for edge in neighbours:
+          actor = edge[0]
+          title = edge[1]
+          year = edge[2]
+
+          if paths[actor] == []:
+            paths[actor].append((degree, title, year, v))
+            queue.append(actor)
+          elif degree < paths[actor][0][0]:
+            paths[actor].clear()
+            paths[actor].append((degree, title, year, v))
+          elif degree == paths[actor][0][0]:
+            paths[actor].append((degree, title, year, v))
+        
+      visited.append(v)
+  
+  return None
+
+
+def print_path(paths, end):  
+  paths = sorted(paths)
+  for number in range(0, len(paths)):
+    start = paths[number][0]
+    print(f"{number + 1}. {start} was in", end = ' ')
+    paths[number].remove(start)
+    for i in paths[number]:
+      if i[3] == end:
+        print(f"{i[1]} ({i[2]}) with {i[3]}")
+      else:
+        print(f"{i[1]} ({i[2]}) with {i[3]}; {i[3]} was in", end = ' ')
+
+
+# find all paths from start to end from shortest paths
+def find_all_paths(start, end, graph, path=[]):
+  path = path + [start]
+  if type(start) is tuple:
+    start = start[3]
+    
+  if start == end:
+    return [path]
+  if graph[start] is None:
+    return []
+
+  paths = []
+  for node in graph[start]:
+    if node not in path:
+      newpaths = find_all_paths(node, end, graph, path)
+      for newpath in newpaths:
+        paths.append(newpath)
+  return paths
+
+
+if __name__ == "__main__":
+  if len(sys.argv) != 3 :
+    print("Usage:", sys.argv[0], "Actor Acror")
+    sys.exit(1)
+  start = 0
+  goal = 0
+  con = None
+  con = sqlite3.connect('a2.db')
+  cur = con.cursor()
+  build_graph(cur) 
+
+  cur.execute("select name from actor where name like '%{}%'".format(sys.argv[1]))
+  t = cur.fetchone()
+  start = t[0]
+
+  cur.execute("select name from actor where name like '%{}%'".format(sys.argv[2]))
+  t = cur.fetchone()
+  goal = t[0]
+
+  shortest_paths = BFS_SP(goal, start)
+  if shortest_paths is not None:
+    all_paths = find_all_paths(start, goal, shortest_paths)
+    print_path(all_paths, goal)
+
+  con.close()

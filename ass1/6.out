@@ -1,0 +1,6 @@
+ pno | ptype | pid | firstname | lastname 
+-----+-------+-----+-----------+----------
+   2 | C     |   0 | Jack      | White
+   8 | P     |  14 | Tom       | Holland
+(2 rows)
+

@@ -1,0 +1,13 @@
+ pid | firstname | lastname 
+-----+-----------+----------
+   1 | David     | Lee
+   2 | Mary      | Jones
+   3 | Vicky     | Donald
+   4 | Vincent   | Thomas
+   5 | Teresa    | Story
+   6 | Alice     | Wang
+   7 | David     | Bond
+  13 | Chris     | Evans
+  15 | Peter     | Pan
+(9 rows)
+

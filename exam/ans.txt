@@ -1,0 +1,49 @@
+-- COMP3311 21T1 Exam Answer Template for Written Questions
+--
+-- Modify the dummy placeholder REPLACE ME for each of
+-- the Questions below (Q8 - Q11)
+
+
+-- Q8
+-- Functional dependencies
+-- (a)
+In this case, the candidate key is BC
+
+-- (b)
+In this case, the candidate key is A 
+
+-- (c)
+In this case, the candidate keys are CEA CED 
+
+
+-- Q9
+-- Normalization
+-- (a)
+Final schema: AG, ABC(A->CB), EF(E->F), CED(C->ED)
+
+-- (b)
+Final schema: AC(A->C), DEF(D->EF), BG(B->G), ABD
+
+-- (c)
+Final schema: DE(D->E), ABCD(ABC->D), FAG(F->AG), BCF
+
+
+-- Q10
+-- Serializability
+-- (a)
+conflict-serializable
+
+-- (b)
+not conflict-serializable
+
+-- (c)
+view serializable
+
+-- (d)
+not view serializable
+
+
+-- Q11
+-- Relational algebra
+--
+E

@@ -1,0 +1,6 @@
+ pid | firstname | lastname 
+-----+-----------+----------
+  13 | Chris     | Evans
+  15 | Peter     | Pan
+(2 rows)
+

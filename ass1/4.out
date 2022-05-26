@@ -1,0 +1,9 @@
+ pid | firstname | lastname 
+-----+-----------+----------
+   2 | Mary      | Jones
+   3 | Vicky     | Donald
+   7 | David     | Bond
+   8 | Frederick | Brown
+   9 | Lucy      | Smiths
+(5 rows)
+

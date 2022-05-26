@@ -1,0 +1,64 @@
+#!/usr/bin/python3
+
+"""
+The toprank script ranks movies based on their IMDB rating. 
+It considers movies with given genres and the minimum acceptable IMDB score to 
+be listed in the output.  Genres is a list of genres (based on case insensitive matching) separated by '&', 
+MinRating is the minimum acceptable IMDB score. The output is ranked by IMDB score 
+and then by the number of votes (both in descending order). 
+We interpret '&' as conjunction.
+"""
+
+import sqlite3,sys
+
+if len(sys.argv) != 3 :
+  print("Usage:", sys.argv[0], "Genres MinRating")
+  sys.exit(1)
+
+genres = sys.argv[1].split("&")     
+minrat = sys.argv[2]
+con = None
+
+con = sqlite3.connect('a2.db')
+cur = con.cursor()
+
+cur.execute(
+  'select mo.title, mo.year, mo.content_rating, mo.lang, r.imdb_score, r.num_voted_users, group_concat(gt.genre)\
+  from movie mo \
+  left join rating r on r.movie_id = mo.id \
+  left join genre gt on mo.id = gt.movie_id\
+  where r.imdb_score >= {}\
+  group by mo.id \
+  order by r.imdb_score desc, r.num_voted_users desc'.format(minrat)
+)
+
+count = 1
+
+while True:
+  t = cur.fetchone()
+  if t is None:
+    break
+  
+  find = True
+  for i in genres:
+    if i.upper() not in t[6].upper():
+      find = False
+  
+  if find:
+    title = t[0]
+    list_print = list()
+    if t[1] is not None:
+      list_print.append("{}".format(t[1]))
+    if t[2] is not None:
+      list_print.append(t[2])
+    if t[3] is not None:
+      list_print.append(t[3]) 
+    
+    string = '('+ ', '.join([str(item) for item in list_print]) + ')'
+    
+    imdb = imdb = "{:.1f}".format(t[4])
+    votes = t[5]
+    print(f'{count}. {title} {string} [{imdb}, {votes}]')
+    count = count + 1
+
+con.close()

@@ -1,0 +1,8 @@
+ brand  | vid | pno | premium 
+--------+-----+-----+---------
+ Honda  |   7 |   7 |     580
+ Nissan |   0 |   2 |    1000
+ Toyota |   3 |   4 |     900
+ Toyota |   6 |   8 |     900
+(4 rows)
+

@@ -1,0 +1,5 @@
+ ptype | status | effectivedate | expirydate | agreedvalue | id |    cname    | maxamount 
+-------+--------+---------------+------------+-------------+----+-------------+-----------
+ G     | E      | 2018-12-16    | 2020-12-16 |       32500 |  7 | third party |   1.5e+07
+(1 row)
+

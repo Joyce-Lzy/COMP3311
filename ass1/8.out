@@ -1,0 +1,7 @@
+ pid |     name     | brand  
+-----+--------------+--------
+   0 | Jack White   | Nissan
+   5 | Teresa Story | Honda
+  14 | Tom Holland  | Toyota
+(3 rows)
+
